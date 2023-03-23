@@ -7,6 +7,9 @@ import org.hibernate.annotations.Type;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@NamedQuery(name = "Delivery.findByName",
+            query = "select d from Delivery d where d.name = : name")
+
 @Entity
 public class Delivery {
     @Id
@@ -24,7 +27,7 @@ public class Delivery {
 
     // Lazy fetch is optional, but often a good idea for collection attributes
     // added CascadeType.REMOVE to automatically clear any associated plants when removed
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "delivery", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "delivery", cascade = CascadeType.ALL)
     private List<Plant> plants;
 
     /**
