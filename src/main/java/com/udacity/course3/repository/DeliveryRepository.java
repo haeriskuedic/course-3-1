@@ -1,9 +1,14 @@
 package com.udacity.course3.repository;
 
 import com.udacity.course3.data.Delivery;
+import com.udacity.course3.data.Plant;
+import com.udacity.course3.data.RecipientAndPrice;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +19,26 @@ import java.util.List;
 public class DeliveryRepository {
     @PersistenceContext
     EntityManager entityManager;
+
+    public List<Delivery> findDeliveriesByName(String name) {
+        TypedQuery<Delivery> query = entityManager.createNamedQuery("Delivery.findByName", Delivery.class);
+        query.setParameter("name", name);
+        return query.getResultList();
+    }
+
+    public RecipientAndPrice getBill(Long deliveryId) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<RecipientAndPrice> query = cb.createQuery(RecipientAndPrice.class);
+        Root<Plant> root = query.from(Plant.class);
+        query.select(
+                        cb.construct(
+                                RecipientAndPrice.class,
+                                root.get("delivery").get("name"),
+                                cb.sum(root.get("price"))))
+                .where(cb.equal(root.get("delivery").get("id"), deliveryId));
+
+        return entityManager.createQuery(query).getSingleResult();
+    }
 
     public void persist(Delivery delivery) {
         entityManager.persist(delivery);

@@ -14,7 +14,7 @@ public class Plant {
     private Long id;
 
     @JsonView(Views.Public.class)
-    @Nationalized // should use @Nationalized instead of @Type=nstring
+    @Nationalized
     private String name;
 
     @JsonView(Views.Public.class)
