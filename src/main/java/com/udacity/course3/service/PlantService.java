@@ -18,7 +18,8 @@ public class PlantService {
     }
 
     public Boolean delivered(Long id){
-        System.out.println(plantRepository.deliveryCompleted(id));
+        //System.out.println(plantRepository.deliveryCompleted(id));
+        //return plantRepository.existsPlantByIdAndDeliveryCompleted(id, true);
         return plantRepository.existsPlantByIdAndDeliveryCompleted(id, true);
     }
 
